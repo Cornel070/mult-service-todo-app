@@ -6,13 +6,38 @@ import React, { Component } from 'react'
     import SingleUser from './Users/SingleUser'
     import EditUser from './Users/EditUser'
     import EditTask from './Users/EditTask'
+    import Person from './Person';
+    import Validation from './ValidationComp/Validation';
+    import Char from './CharComp/Char';
 
     class App extends Component {
+      state = {
+        userInput: ''
+      };
+
+      inputChangeHandler = (event) => {
+        this.setState({userInput: event.target.value});
+      }
+
+      deleteCharHandler =(i) => {
+        const chars = this.state.userInput.split('');
+        chars.splice(i, 1);
+        const updatedChars = chars.join('');
+        this.setState({userInput: updatedChars});
+      };
       render () {
+        const charList = this.state.userInput.split('').map((char,i) => {
+          return <Char character ={char} key={i} clicked={() => this.deleteCharHandler(i)}/>;
+        });
         return (
           <BrowserRouter>
             <div>
               <Header />
+              <Person />
+              <input type="text"  onChange={this.inputChangeHandler} value={this.state.userInput}/>
+              <p>{this.state.userInput}</p>
+              <Validation inputLength={this.state.userInput.length}/>
+              {charList}
               <Switch>
                 <Route exact path='/' component={Users} />
                 <Route path='/create' component={NewUser} />
